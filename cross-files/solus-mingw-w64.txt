@@ -1,0 +1,3 @@
+[binaries]
+c = '/usr/share/mingw-w64/bin/x86_64-w64-mingw32-gcc'
+strip = '/usr/bin/strip'

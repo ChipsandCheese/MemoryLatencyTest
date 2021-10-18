@@ -64,7 +64,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-gcc
+       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools
        pip3 install meson
        mkdir build
        cd build

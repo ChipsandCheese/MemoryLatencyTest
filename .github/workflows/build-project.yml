@@ -31,3 +31,9 @@ jobs:
       run: |
        cd build
        meson compile
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: memorylatency
+        path: build/src/memorylatency

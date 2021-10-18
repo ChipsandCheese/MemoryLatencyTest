@@ -18,22 +18,39 @@ jobs:
 
     - name: Configure dependencies
       run: |
-       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools
+       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools gcc-mingw-w64
        pip3 install meson
 
-    - name: Configure toolchain
+    - name: Configure toolchain for Linux
       run: |
        mkdir build
        cd build
        meson --cross-file ../cross-files/musl-static.txt ..
        
-    - name: Build project
+    - name: Build project for Linux
       run: |
        cd build
        meson compile
-
-    - name: Upload artifact
+       
+    - name: Upload Linux artifact
       uses: actions/upload-artifact@v2
       with:
         name: memorylatency
         path: build/src/memorylatency
+       
+    - name: Configure toolchain for Windows
+      run: |
+       mkdir build
+       cd build
+       meson --wipe --cross-file ../cross-files/mingw-w64.txt ..
+       
+    - name: Build project for Windows
+      run: |
+       cd build
+       meson compile
+
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: memorylatency.exe
+        path: build/src/memorylatency.exe

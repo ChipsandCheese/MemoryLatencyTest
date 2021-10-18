@@ -1,4 +1,4 @@
-name: "Build with Meson and musl-gcc"
+name: "Build with Meson"
 
 on:
   push:

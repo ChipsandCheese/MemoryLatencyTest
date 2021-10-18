@@ -9,7 +9,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Use the C11 timespec API to calculate latency on Linux, and use doubles instead of floats for math, increasing result precision
+- Significantly improve precision of latency calculations
 
 ## v0.1.1 (2021-10-18)
 

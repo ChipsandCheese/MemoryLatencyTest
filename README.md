@@ -4,7 +4,7 @@ Originally developed by [clamchowder](https://github.com/clamchowder/) and maint
 
 ## Download
 
-Get the latest release from the GitHub releases page [here](https://github.com/ChipsandCheese/MemoryLatencyTest/releases/). Windows and Linux binaries are both available.
+Get the latest (semi) stable release from the GitHub releases page [here](https://github.com/ChipsandCheese/MemoryLatencyTest/releases/). Windows and Linux binaries are both available. Bleeding edge binaries can be found in the artifacts of the Build with Meson workflow [here](https://github.com/ChipsandCheese/MemoryLatencyTest/actions/workflows/build-project.yml)
 
 ## Compile
 

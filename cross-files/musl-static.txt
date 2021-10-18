@@ -1,0 +1,6 @@
+[binaries]
+c = '/usr/bin/musl-gcc'
+strip = '/usr/bin/strip'
+
+[built-in options]
+c_link_args = ['-static']

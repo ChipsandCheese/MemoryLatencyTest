@@ -68,7 +68,7 @@ jobs:
        pip3 install meson
        mkdir build
        cd build
-       meson ..
+       meson --cross-file ../cross-files/musl-static.txt ..
        meson compile
 
     - name: Perform CodeQL Analysis

@@ -46,7 +46,6 @@ uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
 
 float RunTest(uint32_t size_kb, uint64_t iterations) {
     struct timeval startTv, endTv;
-    struct timezone startTz, endTz;
     uint32_t list_size = size_kb * 1024 / 4;
     uint32_t sum = 0, current;
 
@@ -68,13 +67,13 @@ float RunTest(uint32_t size_kb, uint64_t iterations) {
     uint64_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
-    gettimeofday(&startTv, &startTz);
+    gettimeofday(&startTv, NULL);
     current = A[0];
     for (uint64_t i = 0; i < scaled_iterations; i++) {
         current = A[current];
         sum += current;
     }
-    gettimeofday(&endTv, &endTz);
+    gettimeofday(&endTv, NULL);
     uint64_t time_diff_ms = 1000 * (endTv.tv_sec - startTv.tv_sec) + ((endTv.tv_usec - startTv.tv_usec) / 1000);
     float latency = 1e6 * (float)time_diff_ms / (float)scaled_iterations;
     free(A);

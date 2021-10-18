@@ -1,0 +1,31 @@
+name: "Build with Meson and musl-gcc"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+
+jobs:
+  Build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Configure dependencies
+      run: |
+       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools
+       pip3 install meson
+
+    - name: Configure toolchain
+      run: |
+       mkdir build
+       cd build
+       meson --cross-file ../cross-files/musl-static.txt ..
+       
+    - name: Build project
+      run: meson compile

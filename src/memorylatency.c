@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -45,7 +46,12 @@ uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
 }
 
 float RunTest(uint32_t size_kb, uint64_t iterations) {
+    #ifdef __linux__
     struct timespec startTs, endTs;
+    #else
+    struct timeval startTv, endTv;
+    #endif
+
     uint32_t list_size = size_kb * 1024 / 4;
     uint32_t sum = 0, current;
 
@@ -67,14 +73,26 @@ float RunTest(uint32_t size_kb, uint64_t iterations) {
     uint64_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
+    #ifdef __linux__
     timespec_get(&startTs, TIME_UTC);
+    #else
+    gettimeofday(&startTv, NULL);
+    #endif
+
     current = A[0];
     for (uint64_t i = 0; i < scaled_iterations; i++) {
         current = A[current];
         sum += current;
     }
+    
+    #ifdef __linux__
     timespec_get(&endTs, TIME_UTC);
-    uint64_t time_diff_ns = (long) (endTs.tv_sec - startTs.tv_sec) * 1000000000L + (endTs.tv_nsec - startTs.tv_nsec);
+    uint64_t time_diff_ns = (long) (endTs.tv_sec - startTs.tv_sec) * 1e9 + (endTs.tv_nsec - startTs.tv_nsec);
+    #else
+    gettimeofday(&endTv, NULL);
+    uint64_t time_diff_ns = (1000 * (endTv.tv_sec - startTv.tv_sec) + ((endTv.tv_usec - startTv.tv_usec) / 1000)) * 1e6;
+    #endif
+
     double latency = (double) time_diff_ns / (double) scaled_iterations;
     free(A);
 

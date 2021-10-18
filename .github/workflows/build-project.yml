@@ -40,7 +40,6 @@ jobs:
        
     - name: Configure toolchain for Windows
       run: |
-       mkdir build
        cd build
        meson --wipe --cross-file ../cross-files/mingw-w64.txt ..
        

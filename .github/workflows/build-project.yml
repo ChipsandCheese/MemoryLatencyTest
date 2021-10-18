@@ -28,4 +28,6 @@ jobs:
        meson --cross-file ../cross-files/musl-static.txt ..
        
     - name: Build project
-      run: meson compile
+      run: |
+       cd build
+       meson compile

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
 
 #define ITERATIONS 100000000
@@ -45,7 +45,7 @@ uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
 }
 
 float RunTest(uint32_t size_kb, uint64_t iterations) {
-    struct timeval startTv, endTv;
+    struct timespec startTs, endTs;
     uint32_t list_size = size_kb * 1024 / 4;
     uint32_t sum = 0, current;
 
@@ -67,15 +67,15 @@ float RunTest(uint32_t size_kb, uint64_t iterations) {
     uint64_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
-    gettimeofday(&startTv, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &startTs);
     current = A[0];
     for (uint64_t i = 0; i < scaled_iterations; i++) {
         current = A[current];
         sum += current;
     }
-    gettimeofday(&endTv, NULL);
-    uint64_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
-    double latency = 1e3 * (double) time_diff_ms / (double) scaled_iterations;
+    clock_gettime(CLOCK_MONOTONIC, &endTs);
+    uint64_t time_diff_ms = 1e9 * (endTs.tv_sec - startTs.tv_sec) + (endTs.tv_nsec - startTs.tv_nsec);
+    double latency = (double) time_diff_ms / (double) scaled_iterations;
     free(A);
 
     if (sum == 0) printf("sum == 0 (?)\n");

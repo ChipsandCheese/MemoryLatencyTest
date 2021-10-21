@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -21,8 +21,7 @@ int main(int argc, char* argv[]) {
     }
 
     printf("Region,Latency (ns)\n");
-    for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++)
-    {
+    for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
         printf("%d,%.8g\n", default_test_sizes[i], RunTest(default_test_sizes[i], mobile_wait ? ITERATIONS / 5 : ITERATIONS));
         if (mobile_wait) sleep(5);
     }
@@ -30,12 +29,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-/// <summary>
-/// Heuristic to make sure test runs for enough time but not too long
-/// </summary>
-/// <param name="size_kb">Region size</param>
-/// <param name="iterations">base iterations</param>
-/// <returns>scaled iterations</returns>
+// Scales iterations based on region size, to avoid running the test for too long
 uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
     uint64_t retval = iterations;
     if (size_kb <= 512) retval *= 10;

@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,11 +32,7 @@ int main(int argc, char* argv[]) {
 
 // Scales iterations based on region size, to avoid running the test for too long
 uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
-    uint64_t retval = iterations;
-    if (size_kb <= 512) retval *= 10;
-    if (size_kb > 4096) retval /= 10;
-    if (size_kb > 131072) retval /= 30;
-    return retval;
+    return 10 * iterations / pow(size_kb, 1.0 / 4.0);
 }
 
 float RunTest(uint32_t size_kb, uint64_t iterations) {

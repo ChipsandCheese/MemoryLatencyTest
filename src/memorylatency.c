@@ -14,17 +14,12 @@ int default_test_sizes[36] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 25
 float RunTest(uint32_t size_kb, uint64_t iterations);
 
 int main(int argc, char* argv[]) {
+    (void) argc;
     (void) argv;
-
-    int mobile_wait  = 0;
-    if (argc > 1) {
-        mobile_wait = 1;
-    }
 
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
-        printf("%d,%.8g\n", default_test_sizes[i], RunTest(default_test_sizes[i], mobile_wait ? ITERATIONS / 5 : ITERATIONS));
-        if (mobile_wait) sleep(5);
+        printf("%d,%.8g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
     }
 
     return 0;

@@ -28,6 +28,11 @@ int main(int argc, char* argv[]) {
         printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
     }
 
+#ifdef _WIN32
+    printf("\nPress the ENTER key to continue...");
+    getchar();
+#endif
+
     return 0;
 }
 

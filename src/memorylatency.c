@@ -14,8 +14,14 @@ int default_test_sizes[36] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 25
 float RunTest(uint32_t size_kb, uint64_t iterations);
 
 int main(int argc, char* argv[]) {
-    (void) argc;
-    (void) argv;
+    int option;
+    while ((option = getopt(argc, argv, ":")) != -1) {
+        switch (option) {
+            case '?': // unknown option
+                printf("Unknown option '%c' provided.\n", optopt);
+                return 1;
+        }
+    }
 
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {

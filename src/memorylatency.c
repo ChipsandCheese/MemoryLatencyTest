@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
-        printf("%d,%.8g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
+        printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
     }
 
     return 0;

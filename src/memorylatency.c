@@ -11,7 +11,7 @@ int default_test_sizes[36] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 25
                                3072, 4096, 5120, 6144, 8192, 10240, 12288, 16384, 24567, 32768, 65536, 98304,
                                131072, 262144, 393216, 524288, 1048576 };
 
-float RunTest(uint32_t size_kb, uint64_t iterations);
+float RunTest(uint32_t size_kb, uint32_t iterations);
 
 int main(int argc, char* argv[]) {
     int option;
@@ -37,11 +37,11 @@ int main(int argc, char* argv[]) {
 }
 
 // Scales iterations based on region size, to avoid running the test for too long
-uint64_t scale_iterations(uint32_t size_kb, uint64_t iterations) {
+uint32_t scale_iterations(uint32_t size_kb, uint32_t iterations) {
     return 10 * iterations / pow(size_kb, 1.0 / 4.0);
 }
 
-float RunTest(uint32_t size_kb, uint64_t iterations) {
+float RunTest(uint32_t size_kb, uint32_t iterations) {
     struct timeval startTv, endTv;
     uint32_t list_size = size_kb * 1024 / 4;
     uint32_t sum = 0, current;
@@ -61,18 +61,18 @@ float RunTest(uint32_t size_kb, uint64_t iterations) {
         A[j] = tmp;
     }
 
-    uint64_t scaled_iterations = scale_iterations(size_kb, iterations);
+    uint32_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
     gettimeofday(&startTv, NULL);
     current = A[0];
-    for (uint64_t i = 0; i < scaled_iterations; i++) {
+    for (uint32_t i = 0; i < scaled_iterations; i++) {
         current = A[current];
         sum += current;
     }
     gettimeofday(&endTv, NULL);
-    uint64_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
-    double latency = 1e3 * (double) time_diff_ms / (double) scaled_iterations;
+    uint32_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
+    float latency = 1e3 * (float) time_diff_ms / (float) scaled_iterations;
     free(A);
 
     if (sum == 0) printf("sum == 0 (?)\n");

@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#define ITERATIONS 100000000
+int32_t ITERATIONS = 100000000;
 
 #ifdef __i386
 typedef float floating_t;
@@ -35,8 +35,18 @@ int main(int argc, char* argv[]) {
                     fprintf(stderr, "Max test size must be a positive integer.\n");
                     return 1;
                 } else {
-                    printf("Setting max test size to %u MB.\n", maxTestSizeMB);
+                    printf("Setting max test size to %d MB.\n", maxTestSizeMB);
                 }
+                break;
+            case 'i':
+                ITERATIONS = atoi(optarg);
+                if (ITERATIONS <= 0) {
+                    fprintf(stderr, "Number of iterations must be a positive integer.\n");
+                    return 1;
+                } else {
+                    printf("Setting base iterations to %d.\n", ITERATIONS);
+                }
+                break;
         }
     }
 

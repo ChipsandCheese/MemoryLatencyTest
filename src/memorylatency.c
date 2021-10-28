@@ -8,11 +8,17 @@
 
 #define ITERATIONS 100000000
 
+#ifdef __i386
+typedef float floating_t;
+#else
+typedef double floating_t;
+#endif
+
 int default_test_sizes[37] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 600, 768, 1024, 1536, 2048,
                                3072, 4096, 5120, 6144, 8192, 10240, 12288, 16384, 24567, 32768, 65536, 98304,
                                131072, 262144, 393216, 524288, 1048576 };
 
-float RunTest(uint32_t size_kb, uint32_t iterations);
+floating_t RunTest(uint32_t size_kb, uint32_t iterations);
 
 int main(int argc, char* argv[]) {
     int maxTestSizeMB = 0;
@@ -57,7 +63,7 @@ uint32_t scale_iterations(uint32_t size_kb, uint32_t iterations) {
     return 10 * iterations / pow(size_kb, 1.0 / 4.0);
 }
 
-float RunTest(uint32_t size_kb, uint32_t iterations) {
+floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
     struct timeval startTv, endTv;
     uint32_t list_size = size_kb * 1024 / 4;
     uint32_t sum = 0, current;
@@ -87,8 +93,8 @@ float RunTest(uint32_t size_kb, uint32_t iterations) {
         sum += current;
     }
     gettimeofday(&endTv, NULL);
-    uint32_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
-    float latency = 1e3 * (float) time_diff_ms / (float) scaled_iterations;
+    time_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
+    floating_t latency = 1e3 * (floating_t) time_diff_ms / (floating_t) scaled_iterations;
     free(A);
 
     if (sum == 0) printf("sum == 0 (?)\n");

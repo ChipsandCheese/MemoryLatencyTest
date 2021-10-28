@@ -70,6 +70,12 @@ floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
 
     // Fill list to create random access pattern
     int* A = (int*) malloc(sizeof(int) * list_size);
+
+    if (!A) {
+        fprintf(stderr, "Failed to allocate memory for %u KB test.\n", size_kb);
+        return 1;
+    }
+
     for (uint32_t i = 0; i < list_size; i++) {
         A[i] = i;
     }

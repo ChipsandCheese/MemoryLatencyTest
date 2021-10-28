@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -14,18 +15,33 @@ int default_test_sizes[37] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 25
 float RunTest(uint32_t size_kb, uint32_t iterations);
 
 int main(int argc, char* argv[]) {
+    int maxTestSizeMB = 0;
+
     int option;
-    while ((option = getopt(argc, argv, ":")) != -1) {
+    while ((option = getopt(argc, argv, ":m:i:")) != -1) {
         switch (option) {
             case '?': // unknown option
                 printf("Unknown option '%c' provided.\n", optopt);
                 return 1;
+            case 'm':
+                maxTestSizeMB = atoi(optarg);
+                if (maxTestSizeMB <= 0) {
+                    printf("Max test size must be a positive integer.\n");
+                    return 1;
+                } else {
+                    printf("Setting max test size to %u MB.\n", maxTestSizeMB);
+                }
         }
     }
 
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
-        printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
+        if (maxTestSizeMB == 0 || default_test_sizes[i] <= maxTestSizeMB * 1024) {
+            printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
+        } else {
+            printf("Stopping at %d KB.\n", maxTestSizeMB * 1024);
+            break;
+        }
     }
 
 #ifdef _WIN32

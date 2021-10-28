@@ -27,12 +27,12 @@ int main(int argc, char* argv[]) {
     while ((option = getopt(argc, argv, ":m:i:")) != -1) {
         switch (option) {
             case '?': // unknown option
-                printf("Unknown option '%c' provided.\n", optopt);
+                fprintf(stderr, "Unknown option '%c' provided.\n", optopt);
                 return 1;
             case 'm':
                 maxTestSizeMB = atoi(optarg);
                 if (maxTestSizeMB <= 0) {
-                    printf("Max test size must be a positive integer.\n");
+                    fprintf(stderr, "Max test size must be a positive integer.\n");
                     return 1;
                 } else {
                     printf("Setting max test size to %u MB.\n", maxTestSizeMB);

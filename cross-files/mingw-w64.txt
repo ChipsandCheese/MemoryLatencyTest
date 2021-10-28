@@ -1,3 +1,9 @@
 [binaries]
 c = '/usr/bin/x86_64-w64-mingw32-gcc'
 strip = '/usr/bin/strip'
+
+[host_machine]
+system = 'windows'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'

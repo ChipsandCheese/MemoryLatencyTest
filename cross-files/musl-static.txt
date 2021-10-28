@@ -4,3 +4,9 @@ strip = '/usr/bin/strip'
 
 [built-in options]
 c_link_args = ['-static']
+
+[host_machine]
+system = 'linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'

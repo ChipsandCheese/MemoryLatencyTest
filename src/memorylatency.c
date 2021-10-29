@@ -14,6 +14,11 @@ typedef float floating_t;
 typedef double floating_t;
 #endif
 
+#ifdef __x86_64
+extern void preplatencyarr(uint64_t *arr, uint32_t len) __attribute__((ms_abi));
+extern uint32_t latencytest(uint64_t iterations, uint64_t *arr) __attribute((ms_abi));
+#endif
+
 int default_test_sizes[37] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 600, 768, 1024, 1536, 2048,
                                3072, 4096, 5120, 6144, 8192, 10240, 12288, 16384, 24567, 32768, 65536, 98304,
                                131072, 262144, 393216, 524288, 1048576 };
@@ -73,13 +78,21 @@ uint32_t scale_iterations(uint32_t size_kb, uint32_t iterations) {
     return 10 * iterations / pow(size_kb, 1.0 / 4.0);
 }
 
+#ifdef __i686
+#define POINTER_SIZE 4
+#define POINTER_INT uint32_t
+#else
+#define POINTER_SIZE 8
+#define POINTER_INT uint64_t
+#endif
+
 floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
     struct timeval startTv, endTv;
-    uint32_t list_size = size_kb * 1024 / 4;
-    uint32_t sum = 0, current;
+    uint32_t list_size = size_kb * 1024 / POINTER_SIZE; // using 32-bit pointers
+    uint32_t sum = 0;
 
     // Fill list to create random access pattern
-    int* A = (int*) malloc(sizeof(int) * list_size);
+    POINTER_INT* A = (POINTER_INT*) malloc(POINTER_SIZE* list_size);
 
     if (!A) {
         fprintf(stderr, "Failed to allocate memory for %u KB test.\n", size_kb);
@@ -94,21 +107,32 @@ floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
     while (iter > 1) {
         iter -= 1;
         int j = iter - 1 == 0 ? 0 : rand() % (iter - 1);
-        uint32_t tmp = A[iter];
+        POINTER_INT tmp = A[iter];
         A[iter] = A[j];
         A[j] = tmp;
     }
+
+#ifdef __x86_64
+    preplatencyarr(A, list_size);
+#endif
 
     uint32_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
     gettimeofday(&startTv, NULL);
-    current = A[0];
+
+#ifdef __x86_64
+    sum = latencytest(scaled_iterations, A);
+#else
+    uint32_t current = A[0];
     for (uint32_t i = 0; i < scaled_iterations; i++) {
         current = A[current];
         sum += current;
     }
+#endif
+
     gettimeofday(&endTv, NULL);
+
     time_t time_diff_ms = 1e6 * (endTv.tv_sec - startTv.tv_sec) + (endTv.tv_usec - startTv.tv_usec);
     floating_t latency = 1e3 * (floating_t) time_diff_ms / (floating_t) scaled_iterations;
     free(A);

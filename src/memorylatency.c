@@ -18,6 +18,9 @@ typedef double floating_t;
 #ifdef __x86_64
 extern void preplatencyarr(uint64_t *arr, uint32_t len) __attribute__((ms_abi));
 extern uint32_t latencytest(uint64_t iterations, uint64_t *arr) __attribute((ms_abi));
+#elif defined(__i386) || defined(__i686)
+extern void preplatencyarr(uint32_t *arr, uint32_t len) __attribute__((fastcall));
+extern uint32_t latencytest(uint32_t iterations, uint32_t *arr) __attribute((fastcall));
 #endif
 
 int default_test_sizes[37] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 600, 768, 1024, 1536, 2048,
@@ -30,7 +33,7 @@ int main(int argc, char* argv[]) {
     int maxTestSizeMB = 0;
     bool useAsm = false;
 
-#ifdef __x86_64
+#if defined(__x86_64) || defined(__i386) || defined(__i686)
     useAsm = true;
 #endif
 
@@ -88,7 +91,7 @@ uint32_t scale_iterations(uint32_t size_kb, uint32_t iterations) {
     return 10 * iterations / pow(size_kb, 1.0 / 4.0);
 }
 
-#ifdef __i686
+#if defined(__i386) || defined(__i686)
 #define POINTER_SIZE 4
 #define POINTER_INT uint32_t
 #else

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.3.0 (2021-10-29)
+
+### Added
+
+- Help option (`-h`)
+- Option to set max region size in megabytes (`-m`)
+- Option to set base iterations to run for each region size (`-i`)
+- Option to force the C version of the test (`-c`)
+- Assembly version of the critical section of the test
+- 384 KB now included in default region sizes
+
+### Changed
+
+- x86 and x86-64 platforms now run the assembly version of the test by default
+- Use 32-bit data types when running on x86
+- Use `time_t` for calculation step
+
+### Fixed
+
+- Test now ensures that memory was properly allocated before proceeding
+- Errors are now printed to sterr rather than stdout
+
 ## v0.2.0 (2021-10-22)
 
 ### Added

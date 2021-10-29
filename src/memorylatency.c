@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 
 int32_t ITERATIONS = 100000000;
 
-#ifdef __i386
+#if defined(__i386) || defined(__i686)
 typedef float floating_t;
 #else
 typedef double floating_t;
@@ -23,13 +24,18 @@ int default_test_sizes[37] = { 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 25
                                3072, 4096, 5120, 6144, 8192, 10240, 12288, 16384, 24567, 32768, 65536, 98304,
                                131072, 262144, 393216, 524288, 1048576 };
 
-floating_t RunTest(uint32_t size_kb, uint32_t iterations);
+floating_t RunTest(uint32_t size_kb, uint32_t iterations, bool useAsm);
 
 int main(int argc, char* argv[]) {
     int maxTestSizeMB = 0;
+    bool useAsm = false;
+
+#ifdef __x86_64
+    useAsm = true;
+#endif
 
     int option;
-    while ((option = getopt(argc, argv, ":m:i:")) != -1) {
+    while ((option = getopt(argc, argv, ":m:i:c")) != -1) {
         switch (option) {
             case '?': // unknown option
                 fprintf(stderr, "Unknown option '%c' provided.\n", optopt);
@@ -52,13 +58,17 @@ int main(int argc, char* argv[]) {
                     printf("Setting base iterations to %d.\n", ITERATIONS);
                 }
                 break;
+            case 'c':
+                printf("Running critical path in C.\n");
+                useAsm = false;
+                break;
         }
     }
 
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
         if (maxTestSizeMB == 0 || default_test_sizes[i] <= maxTestSizeMB * 1024) {
-            printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS));
+            printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS, useAsm));
         } else {
             printf("Stopping at %d KB.\n", maxTestSizeMB * 1024);
             break;
@@ -86,7 +96,7 @@ uint32_t scale_iterations(uint32_t size_kb, uint32_t iterations) {
 #define POINTER_INT uint64_t
 #endif
 
-floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
+floating_t RunTest(uint32_t size_kb, uint32_t iterations, bool useAsm) {
     struct timeval startTv, endTv;
     uint32_t list_size = size_kb * 1024 / POINTER_SIZE; // using 32-bit pointers
     uint32_t sum = 0;
@@ -112,24 +122,24 @@ floating_t RunTest(uint32_t size_kb, uint32_t iterations) {
         A[j] = tmp;
     }
 
-#ifdef __x86_64
-    preplatencyarr(A, list_size);
-#endif
+    if (useAsm) {
+        preplatencyarr(A, list_size);
+    }
 
     uint32_t scaled_iterations = scale_iterations(size_kb, iterations);
 
     // Run test
     gettimeofday(&startTv, NULL);
 
-#ifdef __x86_64
-    sum = latencytest(scaled_iterations, A);
-#else
-    uint32_t current = A[0];
-    for (uint32_t i = 0; i < scaled_iterations; i++) {
-        current = A[current];
-        sum += current;
+    if (useAsm) {
+        sum = latencytest(scaled_iterations, A);
+    } else {
+        uint32_t current = A[0];
+        for (uint32_t i = 0; i < scaled_iterations; i++) {
+            current = A[current];
+            sum += current;
+        }
     }
-#endif
 
     gettimeofday(&endTv, NULL);
 

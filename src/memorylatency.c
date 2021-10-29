@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 #endif
 
     int option;
-    while ((option = getopt(argc, argv, ":m:i:c")) != -1) {
+    while ((option = getopt(argc, argv, ":m:i:ch")) != -1) {
         switch (option) {
             case '?': // unknown option
                 fprintf(stderr, "Unknown option '%c' provided.\n", optopt);
@@ -65,6 +65,16 @@ int main(int argc, char* argv[]) {
                 printf("Running critical path in C.\n");
                 useAsm = false;
                 break;
+            case 'h':
+                printf("Usage:\n");
+                printf("\tmemorylatency [OPTIONS]\n");
+                printf("\n");
+                printf("Options:\n");
+                printf("\t-h\t\tPrints this help text.\n");
+                printf("\t-c\t\tForces the C version of the test.\n");
+                printf("\t-m <max>\tSets the max test size to the provided number, in megabytes.\n");
+                printf("\t-i <iterations>\tSets the base number of iterations to run for each region size.\n");
+                return 0;
         }
     }
 

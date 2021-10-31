@@ -6,7 +6,8 @@ elif (host_machine.cpu_family() == 'x86')
     sources += 'memorylatency-x86.s'
 endif
 
-executable('memorylatency',
+executable('memorylatency-' + host_machine.cpu(),
            sources,
            c_args: default_cflags,
+           link_args: ['-lm'],
            install : true)

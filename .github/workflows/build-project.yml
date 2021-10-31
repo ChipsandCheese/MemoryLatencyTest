@@ -28,18 +28,18 @@ jobs:
        mkdir build
        cd build
        meson --cross-file ../cross-files/musl-static.txt ..
-       
+
     - name: Build project for Linux x86_64
       run: |
        cd build
        ninja
-       
+
     - name: Upload Linux x86_64 artifact
       uses: actions/upload-artifact@v2
       with:
-        name: memorylatency
-        path: build/src/memorylatency
-       
+        name: memorylatency-x86_64
+        path: build/src/memorylatency-x86_64
+
     - name: Configure toolchain for Windows x86_64
       run: |
        cd build
@@ -53,8 +53,8 @@ jobs:
     - name: Upload Windows x86_64 artifact
       uses: actions/upload-artifact@v2
       with:
-        name: memorylatency.exe
-        path: build/src/memorylatency.exe
+        name: memorylatency-x86_64.exe
+        path: build/src/memorylatency-x86_64.exe
 
     - name: Configure toolchain for Windows i386
       run: |
@@ -66,9 +66,9 @@ jobs:
       run: |
        cd build
        ninja
-    
+
     - name: Upload Windows i386 artifact
       uses: actions/upload-artifact@v2
       with:
         name: memorylatency-i386.exe
-        path: build/src/memorylatency.exe
+        path: build/src/memorylatency-i386.exe

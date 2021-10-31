@@ -1,7 +1,7 @@
 .text
 
-.global @latencytest@8
-.global @preplatencyarr@8
+.global _latencytest
+.global _preplatencyarr
 
 /* fastcall specified in source file, so
    ecx = ptr to arr
@@ -10,7 +10,7 @@
    there has to be a way to make C do this but high level
    programming languages suck and make simple things harder than they should be
 */
-@preplatencyarr@8:
+_preplatencyarr:
   push %eax
   push %esi
   xor %esi, %esi    /* esi = array index */
@@ -29,7 +29,7 @@ preplatencyarr_loop:
    edx = ptr to arr 
    do pointer chasing for specified iteration count
 */
-@latencytest@8:
+_latencytest:
   push %esi
   mov (%edx), %esi
   xor %eax, %eax

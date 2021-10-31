@@ -19,36 +19,56 @@ jobs:
     - name: Configure dependencies
       run: |
        sudo apt install meson ninja-build musl-tools gcc-mingw-w64
+       cd /opt
+       wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.1/djgpp-linux64-gcc1020.tar.bz2
+       tar -xf djgpp-linux64-gcc1020.tar.bz2
 
-    - name: Configure toolchain for Linux
+    - name: Configure toolchain for Linux x86_64
       run: |
        mkdir build
        cd build
        meson --cross-file ../cross-files/musl-static.txt ..
        
-    - name: Build project for Linux
+    - name: Build project for Linux x86_64
       run: |
        cd build
        ninja
        
-    - name: Upload Linux artifact
+    - name: Upload Linux x86_64 artifact
       uses: actions/upload-artifact@v2
       with:
         name: memorylatency
         path: build/src/memorylatency
        
-    - name: Configure toolchain for Windows
+    - name: Configure toolchain for Windows x86_64
       run: |
        cd build
        meson --wipe --cross-file ../cross-files/mingw-w64.txt ..
        
-    - name: Build project for Windows
+    - name: Build project for Windows x86_64
       run: |
        cd build
        ninja
 
-    - name: Upload Windows artifact
+    - name: Upload Windows x86_64 artifact
       uses: actions/upload-artifact@v2
       with:
         name: memorylatency.exe
+        path: build/src/memorylatency.exe
+
+    - name: Configure toolchain for Windows i386
+      run: |
+       cd build
+       meson --wipe --cross-file ../cross-files/djgpp-gcc.txt ..
+       sed -i '/^ LINK_ARGS/d' build/build.ninja
+
+    - name: Build project for Windows i386
+      run: |
+       cd build
+       ninja
+    
+    - name: Upload Windows i386 artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: memorylatency-i386.exe
         path: build/src/memorylatency.exe

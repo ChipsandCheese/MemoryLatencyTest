@@ -18,8 +18,7 @@ jobs:
 
     - name: Configure dependencies
       run: |
-       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools gcc-mingw-w64
-       pip3 install meson
+       sudo apt install meson
 
     - name: Configure toolchain for Linux
       run: |
@@ -30,7 +29,7 @@ jobs:
     - name: Build project for Linux
       run: |
        cd build
-       meson compile
+       ninja
        
     - name: Upload Linux artifact
       uses: actions/upload-artifact@v2
@@ -46,7 +45,7 @@ jobs:
     - name: Build project for Windows
       run: |
        cd build
-       meson compile
+       ninja
 
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v2

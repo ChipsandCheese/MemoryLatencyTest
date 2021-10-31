@@ -6,11 +6,13 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-int32_t ITERATIONS = 100000000;
+
 
 #if defined(__i386) || defined(__i686)
+int32_t ITERATIONS = 10000000;
 typedef float floating_t;
 #else
+int32_t ITERATIONS = 100000000;
 typedef double floating_t;
 #endif
 

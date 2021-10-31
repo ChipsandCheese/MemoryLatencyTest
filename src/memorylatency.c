@@ -82,7 +82,12 @@ int main(int argc, char* argv[]) {
     printf("Region,Latency (ns)\n");
     for (long unsigned int i = 0; i < sizeof(default_test_sizes) / sizeof(int); i++) {
         if (maxTestSizeMB == 0 || default_test_sizes[i] <= maxTestSizeMB * 1024) {
-            printf("%d,%.5g\n", default_test_sizes[i], RunTest(default_test_sizes[i], ITERATIONS, useAsm));
+            floating_t result = RunTest(default_test_sizes[i], ITERATIONS, useAsm);
+            if (isnan(result)) {
+                printf("Stopping at %d KB.\n", default_test_sizes[i]);
+                return 2;
+            }
+            printf("%d,%.5g\n", default_test_sizes[i], result);
         } else {
             printf("Stopping at %d KB.\n", maxTestSizeMB * 1024);
             break;
@@ -120,7 +125,7 @@ floating_t RunTest(uint32_t size_kb, uint32_t iterations, bool useAsm) {
 
     if (!A) {
         fprintf(stderr, "Failed to allocate memory for %u KB test.\n", size_kb);
-        return 1;
+        return NAN;
     }
 
     for (uint32_t i = 0; i < list_size; i++) {

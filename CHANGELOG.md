@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.3.2 (2021-10-30)
+
+### Added
+
+- Program now prints out its version, platform, and architecture when running
+
+### Fixed
+
+- Print out actual path used to call executable when running help command
+- Inconsistent results on i386 platforms when testing L1
+
 ## v0.3.1 (2021-10-30)
 
 ### Added

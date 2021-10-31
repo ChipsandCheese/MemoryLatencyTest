@@ -7,9 +7,8 @@
 #include <unistd.h>
 
 
-
 #if defined(__i386) || defined(__i686)
-int32_t ITERATIONS = 10000000;
+int32_t ITERATIONS = 50000000;
 typedef float floating_t;
 #else
 int32_t ITERATIONS = 100000000;
@@ -37,6 +36,11 @@ int main(int argc, char* argv[]) {
 #if defined(__x86_64) || defined(__i386) || defined(__i686)
     useAsm = true;
 #endif
+
+    printf("Version:\tv%s\n", ver);
+    printf("Platform:\t%s\n", plat);
+    printf("Architecture:\t%s\n", arch);
+    printf("\n");
 
     int option;
     while ((option = getopt(argc, argv, ":m:i:ch")) != -1) {
@@ -68,7 +72,7 @@ int main(int argc, char* argv[]) {
                 break;
             case 'h':
                 printf("Usage:\n");
-                printf("\tmemorylatency [OPTIONS]\n");
+                printf("\t%s [OPTIONS]\n", argv[0]);
                 printf("\n");
                 printf("Options:\n");
                 printf("\t-h\t\tPrints this help text.\n");

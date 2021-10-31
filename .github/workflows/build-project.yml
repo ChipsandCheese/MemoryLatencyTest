@@ -60,7 +60,7 @@ jobs:
       run: |
        cd build
        meson --wipe --cross-file ../cross-files/djgpp-gcc.txt ..
-       sed -i '/^ LINK_ARGS/d' build/build.ninja
+       sed -i '/^ LINK_ARGS/d' build.ninja
 
     - name: Build project for Windows i386
       run: |

@@ -18,7 +18,7 @@ jobs:
 
     - name: Configure dependencies
       run: |
-       sudo apt install meson
+       sudo apt install meson ninja-build musl-tools gcc-mingw-w64
 
     - name: Configure toolchain for Linux
       run: |

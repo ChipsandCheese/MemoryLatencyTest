@@ -17,9 +17,7 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
-  schedule:
-    - cron: '24 9 * * 5'
-
+    
 jobs:
   analyze:
     name: Analyze
@@ -36,6 +34,18 @@ jobs:
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more:
         # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
+        cross-file: [musl-static, mingw-w64, djgpp-gcc]
+        include:
+          # Linux x86_64
+          - cross-file: musl-static
+            file: x86_64
+          # Windows x86_64
+          - cross-file: mingw-w64
+            file: x86_64.exe
+          # Windows i386
+          - cross-file: djgpp-gcc
+            file: i386.exe
+            extra-step: "sed -i '/^ LINK_ARGS/d' build.ninja"        
 
     steps:
     - name: Checkout repository
@@ -63,13 +73,24 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - run: |
-       sudo apt-get install -y python3 python3-pip python3-setuptools python3-wheel ninja-build musl-tools
-       pip3 install meson
+    - name: Configure dependencies
+      run: |
+       sudo apt install meson ninja-build musl-tools gcc-mingw-w64
+       cd /opt
+       wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.1/djgpp-linux64-gcc1020.tar.bz2
+       tar -xf djgpp-linux64-gcc1020.tar.bz2
+ 
+    - name: Configure toolchain
+      run: |
        mkdir build
        cd build
-       meson --cross-file ../cross-files/musl-static.txt ..
-       meson compile
+       meson --cross-file ../cross-files/${{ matrix.cross-file }}.txt ..
+       ${{ matrix.extra-step }}
+       
+    - name: Build project
+      run: |
+       cd build
+       ninja
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

@@ -39,7 +39,7 @@ jobs:
           # Linux x86_64
           - cross-file: musl-static
             file: x86_64
-            loader-command: "sudo ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2"
+            loader-command: "sudo ln -s /lib64/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2"
           # Windows x86_64
           - cross-file: mingw-w64
             file: x86_64.exe

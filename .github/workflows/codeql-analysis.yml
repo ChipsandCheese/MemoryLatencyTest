@@ -34,12 +34,8 @@ jobs:
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more:
         # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
-        cross-file: [musl-static, mingw-w64, djgpp-gcc]
+        cross-file: [mingw-w64, djgpp-gcc]
         include:
-          # Linux x86_64
-          - cross-file: musl-static
-            file: x86_64
-            loader-command: "sudo ln -s /lib64/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2"
           # Windows x86_64
           - cross-file: mingw-w64
             file: x86_64.exe
@@ -80,7 +76,6 @@ jobs:
        cd /opt
        wget https://github.com/andrewwutw/build-djgpp/releases/download/v3.1/djgpp-linux64-gcc1020.tar.bz2
        tar -xf djgpp-linux64-gcc1020.tar.bz2
-       ${{ matrix.loader-command }}
  
     - name: Configure toolchain
       run: |
